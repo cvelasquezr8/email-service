@@ -1,7 +1,7 @@
 {
   "name": "send-email",
   "version": "0.0.1",
-  "description": "",
+  "description": "Email service",
   "author": "Carlos Velasquez",
   "private": true,
   "license": "MIT",
@@ -71,5 +71,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
