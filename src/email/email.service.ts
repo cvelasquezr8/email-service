@@ -18,16 +18,12 @@ export class EmailService {
     });
   }
 
-  async sendEmail(
-    nombre: string,
-    email: string,
-    mensaje: string,
-  ): Promise<void> {
+  async sendEmail(name: string, email: string, message: string): Promise<void> {
     await this.transporter.sendMail({
-      from: `"${nombre}" <${email}>`,
+      from: `"${name}" <${email}>`,
       to: this.configService.get<string>('EMAIL_USER'),
-      subject: `New message from ${nombre}`,
-      text: mensaje,
+      subject: `Keep In Touch - New message from ${name}`,
+      text: message,
     });
   }
 }
