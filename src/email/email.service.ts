@@ -20,10 +20,14 @@ export class EmailService {
 
   async sendEmail(name: string, email: string, message: string): Promise<void> {
     await this.transporter.sendMail({
-      from: `"${name}" <${email}>`,
+      from: `"${name}"`,
       to: this.configService.get<string>('EMAIL_USER'),
       subject: `Keep In Touch - New message from ${name}`,
-      text: message,
+      text: `
+        From: ${name},
+        Email: ${email},
+        Message: ${message}
+        `,
     });
   }
 }
