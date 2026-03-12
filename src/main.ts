@@ -29,7 +29,7 @@ async function main() {
     }),
   );
 
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   logger.log(`Server running on port: ${port}`);
 }
 
