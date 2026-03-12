@@ -1,4 +1,13 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+	"$schema": "https://json.schemastore.org/prettierrc",
+	"editorconfig": true,
+	"singleQuote": true,
+	"trailingComma": "all",
+	"tabWidth": 2,
+	"useTabs": false,
+	"semi": true,
+	"printWidth": 120,
+	"bracketSpacing": true,
+	"arrowParens": "always",
+	"endOfLine": "lf"
 }

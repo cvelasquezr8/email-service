@@ -1,17 +1,32 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function main() {
+  const logger = new Logger('main');
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('PORT') ?? 3000;
+  const originsHeader = configService.get<string>('ALLOWED_ORIGIN');
 
+  app.setGlobalPrefix('api');
   app.enableCors({
-    origin: 'https://cvelasquezr8.github.io',
+    origin: originsHeader,
     methods: 'GET, POST',
     allowedHeaders: 'Content-Type',
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  await app.listen(port);
+  logger.log(`Server running on port: ${port}`);
 }
-main();
+
+void main();

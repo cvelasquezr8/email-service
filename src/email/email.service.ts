@@ -1,33 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+
 import { ConfigService } from '@nestjs/config';
+import { ContactEmailDto } from './dto/contactEmail.dto';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+  constructor(
+    private readonly mailerService: MailerService,
+    private readonly configService: ConfigService,
+  ) {}
 
-  constructor(private configService: ConfigService) {
-    this.transporter = nodemailer.createTransport({
-      host: this.configService.get<string>('EMAIL_HOST'),
-      port: Number(this.configService.get<string>('EMAIL_PORT')),
-      secure: this.configService.get<string>('EMAIL_SECURE') === 'true',
-      auth: {
-        user: this.configService.get<string>('EMAIL_USER'),
-        pass: this.configService.get<string>('EMAIL_PASS'),
-      },
-    });
-  }
+  async sendEmail(contactEmail: ContactEmailDto): Promise<{ success: boolean; message: string }> {
+    try {
+      console.log('Sending email with the following details:', contactEmail);
 
-  async sendEmail(name: string, email: string, message: string): Promise<void> {
-    await this.transporter.sendMail({
-      from: `"${name}"`,
-      to: this.configService.get<string>('EMAIL_USER'),
-      subject: `Keep In Touch - New message from ${name}`,
-      text: `
-        From: ${name},
-        Email: ${email},
-        Message: ${message}
-        `,
-    });
+      const messageId = `<${Date.now()}.${Math.random().toString(36).slice(2)}@carlos-velasquez.dev>`;
+
+      const smtpUser = this.configService.get<string>('EMAIL_USER') || 'contact@carlos-velasquez.dev';
+      const recipient = smtpUser;
+
+      await this.mailerService.sendMail({
+        from: `"Carlos Velasquez Website" <${smtpUser}>`,
+        to: recipient,
+        envelope: { from: smtpUser, to: [recipient] },
+        subject: `[Contact Form] New message from ${contactEmail.name}`,
+        replyTo: contactEmail.email,
+        text: `New message from ${contactEmail.name}:\nEmail: ${contactEmail.email}\nMessage: ${contactEmail.message}`,
+        html: `<p>New message from <strong>${contactEmail.name}</strong></p><p>Email: ${contactEmail.email}</p><p>Message:</p><p>${contactEmail.message.replace(/\n/g, '<br/>')}</p>`,
+        headers: {
+          'X-Mailer': 'NestJS Contact Service',
+          'List-Unsubscribe': '<mailto:contact@carlos-velasquez.dev?subject=unsubscribe>',
+          'Message-ID': messageId,
+        },
+      });
+
+      return { success: true, message: 'Email sent successfully' };
+    } catch (error: unknown) {
+      console.error('Email send error:', error);
+      throw new InternalServerErrorException(
+        'Failed to send email',
+        error instanceof Error ? error.message : 'Unknown error',
+      );
+    }
   }
 }
