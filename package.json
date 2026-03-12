@@ -18,7 +18,7 @@
     "test:cov": "jest --config jest.config.cjs --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --config jest.config.cjs --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json --config jest.config.cjs",
-    "prepare": "husky"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
   },
   "dependencies": {
     "@nest-lab/throttler-storage-redis": "^1.2.0",
