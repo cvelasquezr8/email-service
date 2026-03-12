@@ -1,9 +1,7 @@
-import type { Config } from 'jest';
-// Importamos el JSON directamente
-import { compilerOptions } from './tsconfig.json';
-import { pathsToModuleNameMapper } from 'ts-jest';
+const { pathsToModuleNameMapper } = require('ts-jest');
+const { compilerOptions } = require('./tsconfig.json');
 
-const config: Config = {
+module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: 'src',
   testRegex: '.*\\.spec\\.ts$',
@@ -11,6 +9,7 @@ const config: Config = {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
   collectCoverage: true,
+  coverageProvider: 'v8',
   collectCoverageFrom: [
     '**/*.(t|j)s',
     '!**/main.(t|j)s',
@@ -32,5 +31,3 @@ const config: Config = {
     prefix: '<rootDir>/',
   }),
 };
-
-export default config;
