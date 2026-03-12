@@ -1,5 +1,8 @@
 name: Build Production Branch
 
+permissions:
+  contents: write
+
 on:
   workflow_run:
     workflows: ["Email Service CI"]
