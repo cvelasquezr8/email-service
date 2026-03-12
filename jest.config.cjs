@@ -13,6 +13,7 @@ module.exports = {
   collectCoverageFrom: [
     '**/*.(t|j)s',
     '!**/main.(t|j)s',
+    '!**/*.interface.ts',
     '!**/*.module.(t|j)s',
     '!**/*.config.(t|j)s',
     '!**/*.controller.(t|j)s',
@@ -20,6 +21,7 @@ module.exports = {
   coverageDirectory: '../coverage',
   coveragePathIgnorePatterns: [
     '/node_modules/',
+    '.interface.ts',
     'index.ts$',
     '.module.ts$',
     'main.ts$',
