@@ -88,12 +88,12 @@ export class IdempotencyInterceptor implements NestInterceptor {
         }
       }),
       catchError((err) => {
-        this.logger.error('❌ Skipping idempotency cache due to error:', (err as Error).message || err);
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        this.logger.error('❌ Skipping idempotency cache due to error:', errorMessage);
 
-        // Wrap the error into an Error instance to avoid returning an `any` typed value
-        const message = (err as Error)?.message ?? String(err);
+        const wrappedError = err instanceof Error ? err : new Error(String(err));
 
-        return throwError(() => new Error(message));
+        return throwError(() => wrappedError);
       }),
     );
   }
