@@ -26,6 +26,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
           throw new Error('REDIS_URL is not defined in environment variables');
         }
 
+        const isSsl = redisUrl.startsWith('rediss://');
+
         return {
           throttlers: [
             {
@@ -36,8 +38,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
           ],
           storage: new ThrottlerStorageRedisService(
             new Redis(redisUrl, {
-              enableReadyCheck: false,
-              tls: { rejectUnauthorized: false },
+              tls: isSsl ? { rejectUnauthorized: false } : undefined,
               maxRetriesPerRequest: null,
             }),
           ),
@@ -46,14 +47,28 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }),
     RedisModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'single',
-        url: configService.get<string>('REDIS_URL'),
-        options: {
-          enableReadyCheck: false,
-          tls: { rejectUnauthorized: false },
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const redisUrl = configService.get<string>('REDIS_URL');
+        if (!redisUrl) {
+          throw new Error('REDIS_URL is not defined in environment variables');
+        }
+
+        const isSsl = redisUrl.startsWith('rediss://');
+
+        return {
+          type: 'single',
+          url: redisUrl,
+          options: {
+            enableReadyCheck: false,
+            maxRetriesPerRequest: null,
+            ...(isSsl && {
+              tls: {
+                rejectUnauthorized: false,
+              },
+            }),
+          },
+        };
+      },
     }),
     MailerModule.forRootAsync({
       inject: [ConfigService],

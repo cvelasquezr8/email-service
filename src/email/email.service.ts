@@ -1,8 +1,9 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-
+import { HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ContactEmailDto } from './dto/contactEmail.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+
+import { ContactEmailDto } from './dto/contact-email.dto';
+import { EmailResponse } from '../interfaces/emailResponse.interface';
 
 @Injectable()
 export class EmailService {
@@ -11,13 +12,11 @@ export class EmailService {
     private readonly configService: ConfigService,
   ) {}
 
-  async sendEmail(contacEmail: ContactEmailDto): Promise<{ success: boolean; message: string }> {
+  async sendEmail(contacEmail: ContactEmailDto): Promise<EmailResponse> {
     try {
-      console.log('Sending email with the following details:', contacEmail);
       await this.mailerService.sendMail({
-        from: '"Carlos Velasquez Website" <contact@carlos-velasquez.dev>',
-        // to: this.configService.get<string>('EMAIL_USER'),
-        to: 'contact@carlos-velasquez.dev',
+        from: `"Carlos Velasquez Website" <${this.configService.get<string>('EMAIL_USER')}>`,
+        to: this.configService.get<string>('EMAIL_USER'),
         subject: `[Contact Form] New message from ${contacEmail.name}`,
         replyTo: contacEmail.email,
         text: `New message from ${contacEmail.name}:\nEmail: ${contacEmail.email}\nMessage: ${contacEmail.message}`,
@@ -26,7 +25,11 @@ export class EmailService {
         },
       });
 
-      return { success: true, message: 'Email sent successfully' };
+      return {
+        success: true,
+        statusCode: HttpStatus.CREATED,
+        message: 'Email sent successfully',
+      };
     } catch (error: unknown) {
       throw new InternalServerErrorException(
         'Failed to send email',

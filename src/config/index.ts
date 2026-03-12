@@ -1,2 +1,2 @@
 export * from './env.config';
-export * from './joi.validation';
+export * from './joi-validation.config';

@@ -8,5 +8,5 @@ export const EnvConfiguration = () => ({
   redisUrl: process.env.REDIS_URL,
   throttleTtl: process.env.THROTTLE_TTL,
   throttleLimit: process.env.THROTTLE_LIMIT,
-  noReplyEmail: process.env.NO_REPLY_EMAIL,
+  environment: process.env.NODE_ENV,
 });
