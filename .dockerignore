@@ -1,0 +1,37 @@
+# dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# build output
+dist
+coverage
+
+# environment
+.env
+.env.*
+!.env.example
+
+# git
+.git
+.gitignore
+
+# editor / OS
+.vscode
+.idea
+.DS_Store
+
+# tests
+test
+*.spec.ts
+
+# docs
+README.md
+
+# logs
+logs
+*.log
+
+# misc
+tmp
+temp

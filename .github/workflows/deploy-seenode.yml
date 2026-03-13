@@ -1,27 +1,21 @@
 name: Deploy to Seenode
 
 on:
-  workflow_dispatch:
   workflow_run:
-    workflows: ["Build Production Branch"]
+    workflows: ["Email Service CI"]
     types:
       - completed
 
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    name: Execute Deployment
+    name: Deploy application
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout production branch
-        uses: actions/checkout@v4
-        with:
-          ref: production
-
       - name: Trigger Seenode Deployment
         run: |
           curl -X POST \
             -H "Authorization: Bearer ${{ secrets.SEENODE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
-            -d '{"gitCommitSha": "${{ github.sha }}"}' \
+            -d '{"gitCommitSha": "${{ github.event.workflow_run.head_sha }}"}' \
             "https://api.seenode.com/v1/applications/${{ secrets.SEENODE_APPLICATION_ID }}/deployments"
