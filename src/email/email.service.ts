@@ -15,8 +15,8 @@ export class EmailService {
   async sendEmail(contacEmail: ContactEmailDto): Promise<EmailResponse> {
     try {
       await this.mailerService.sendMail({
-        from: `"Carlos Velasquez Website" <${this.configService.get<string>('EMAIL_USER')}>`,
-        to: this.configService.get<string>('EMAIL_USER'),
+        from: `"Carlos Velasquez Website" <${this.configService.get<string>('CONTAC_EMAIL')}>`,
+        to: this.configService.get<string>('CONTAC_EMAIL'),
         subject: `[Contact Form] New message from ${contacEmail.name}`,
         replyTo: contacEmail.email,
         text: `New message from ${contacEmail.name}:\nEmail: ${contacEmail.email}\nMessage: ${contacEmail.message}`,

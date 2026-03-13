@@ -40,6 +40,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
             new Redis(redisUrl, {
               tls: isSsl ? { rejectUnauthorized: false } : undefined,
               maxRetriesPerRequest: null,
+              enableReadyCheck: false,
             }),
           ),
         };
@@ -84,10 +85,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
         },
         defaults: {
           from: `"No Reply" <${configService.get<string>('EMAIL_USER')}>`,
-        },
-        tls: {
-          ciphers: 'SSLv3',
-          rejectUnauthorized: false,
         },
       }),
     }),

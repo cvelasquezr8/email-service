@@ -9,4 +9,5 @@ export const EnvConfiguration = () => ({
   throttleTtl: process.env.THROTTLE_TTL,
   throttleLimit: process.env.THROTTLE_LIMIT,
   environment: process.env.NODE_ENV,
+  contactEmail: process.env.CONTAC_EMAIL,
 });
