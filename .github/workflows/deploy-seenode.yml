@@ -1,12 +1,15 @@
 name: Deploy to Seenode
 
 on:
-  push:
-    branches:
-      - production
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build Production Branch"]
+    types:
+      - completed
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: Execute Deployment
     runs-on: ubuntu-latest
     steps:
