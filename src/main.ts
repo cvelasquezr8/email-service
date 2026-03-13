@@ -17,8 +17,8 @@ async function main() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.enableCors({
     origin: originsHeader,
-    methods: 'GET, POST',
-    allowedHeaders: 'Content-Type',
+    methods: 'GET, POST, OPTIONS',
+    allowedHeaders: ['Content-Type', 'x-idempotency-key', 'Accept'],
   });
 
   app.useGlobalPipes(

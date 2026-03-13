@@ -1,0 +1,24 @@
+name: Deploy to Seenode
+
+on:
+  push:
+    branches:
+      - production
+
+jobs:
+  deploy:
+    name: Execute Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout production branch
+        uses: actions/checkout@v4
+        with:
+          ref: production
+
+      - name: Trigger Seenode Deployment
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.SEENODE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"gitCommitSha": "${{ github.sha }}"}' \
+            "https://api.seenode.com/v1/applications/${{ secrets.SEENODE_APPLICATION_ID }}/deployments"
