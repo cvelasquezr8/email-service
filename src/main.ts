@@ -10,14 +10,22 @@ async function main() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') ?? 3000;
-  const originsHeader = configService.get<string>('ALLOWED_ORIGIN');
+  const originsHeader = configService.get<string>('ALLOWED_ORIGINS');
+  const allowedOrigins = originsHeader ? originsHeader.split(',').map((origin) => origin.trim()) : [];
 
   app.set('trust proxy', 1);
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new AllExceptionsFilter());
   app.enableCors({
-    origin: originsHeader,
-    methods: 'GET, POST, OPTIONS',
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: 'GET,POST',
+    credentials: true,
     allowedHeaders: ['Content-Type', 'x-idempotency-key', 'Accept'],
   });
 

@@ -4,7 +4,7 @@ export const EnvConfiguration = () => ({
   emailHost: process.env.EMAIL_HOST,
   emailPort: process.env.EMAIL_PORT,
   emailSecure: process.env.EMAIL_SECURE,
-  allowedOrigin: process.env.ALLOWED_ORIGIN,
+  allowedOrigins: process.env.ALLOWED_ORIGINS,
   redisUrl: process.env.REDIS_URL,
   throttleTtl: process.env.THROTTLE_TTL,
   throttleLimit: process.env.THROTTLE_LIMIT,

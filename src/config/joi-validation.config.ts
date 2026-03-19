@@ -6,7 +6,7 @@ export const JoiValidationSchema = Joi.object({
   EMAIL_HOST: Joi.string().required(),
   EMAIL_PORT: Joi.number().required(),
   EMAIL_SECURE: Joi.boolean().required(),
-  ALLOWED_ORIGIN: Joi.string().required(),
+  ALLOWED_ORIGINS: Joi.string().required(),
   PORT: Joi.number().default(3000),
   REDIS_URL: Joi.string().required(),
   THROTTLE_TTL: Joi.number().default(86400000), // 24 hours in milliseconds
